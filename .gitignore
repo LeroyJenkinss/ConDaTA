@@ -1,0 +1,12 @@
+
+ClientSolution*
+ServerSolution*
+*.cs~
+bin
+obj
+*Sol.cs
+.vs
+*.zip
+*.sh
+Playground
+

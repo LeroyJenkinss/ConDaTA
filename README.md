@@ -1,2 +1,2 @@
-# ConDaTA
-assigment 4 analyse
+# Courses
+This repository contains personal educational materials.

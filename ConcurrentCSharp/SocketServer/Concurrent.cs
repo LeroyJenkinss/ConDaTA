@@ -3,8 +3,10 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Collections.Generic;
 
 
 //todo [Assignment]: add required namespaces
@@ -15,10 +17,13 @@ namespace Concurrent
     {
         // todo [Assignment]: implement required attributes specific for concurrent server
 
+        List<string> cmdList = new List<string>();
+        string lastClientId;
+        int cmdWithHighestVotes = 0;
+        string cmdToExecute;
+
         public ConcurrentServer(Setting settings) : base(settings)
         {
-
-            // todo [Assignment]: implement required code
 
         }
         public override void prepareServer()
@@ -37,14 +42,37 @@ namespace Concurrent
                     Socket connection = listener.Accept();
                     this.numOfClients++;
                     this.handleClient(connection);
+                    if (true)
+                    {
+
+                    }
                 }
             }
             catch (Exception e) { Console.Out.WriteLine("[Server] Preparation: {0}", e.Message); }
         }
         public override string processMessage(String msg)
         {
-            // todo [Assignment]: implement required code
-            return "";
+            // ClientId=1>ls -all
+
+            //lastClientId = String.Parse(msg.Split(settings.command_msg_sep)[0].Split("=")[1]);
+            var cmd = msg.Split(settings.command_msg_sep)[1];
+
+            cmdList.Add(cmd);
+
+            foreach (var vote in settings.votingList.Split(settings.commands_sep))
+            {
+                var countVoteOfCommand = cmdList.Where(x => x == vote).Select(x => x).ToList().Count();
+                if (countVoteOfCommand > cmdWithHighestVotes)
+                {
+                    cmdToExecute = vote;
+                    cmdWithHighestVotes = countVoteOfCommand;
+                }
+            }
+
+
+            Console.WriteLine(cmdList);
+
+            return "Your vote has been processed";
         }
     }
 }

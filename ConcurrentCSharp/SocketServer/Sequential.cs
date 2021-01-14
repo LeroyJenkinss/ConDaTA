@@ -90,6 +90,7 @@ namespace Sequential
             data = Encoding.UTF8.GetString(bytes, 0, numByte);
             reply = processMessage(data);
             this.sendMessage(con, reply);
+            con.Close();
         }
 
         // todo [Assignment]: Why is this implemented as virtual?

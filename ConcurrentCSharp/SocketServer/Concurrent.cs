@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 
 //todo [Assignment]: add required namespaces
@@ -19,8 +21,6 @@ namespace Concurrent
 
         List<string> cmdList = new List<string>();
         string lastClientId;
-        int cmdWithHighestVotes = 0;
-        string cmdToExecute;
 
         public ConcurrentServer(Setting settings) : base(settings)
         {
@@ -42,9 +42,9 @@ namespace Concurrent
                     Socket connection = listener.Accept();
                     this.numOfClients++;
                     this.handleClient(connection);
-                    if (true)
+                    if (this.numOfClients == settings.experimentNumberOfClients )
                     {
-
+                        break;
                     }
                 }
             }
@@ -59,6 +59,15 @@ namespace Concurrent
 
             cmdList.Add(cmd);
 
+            Console.WriteLine(cmdList);
+
+            return "Your vote has been processed";
+        }
+
+        public void determineCommandWithMostVotesAndExecute()
+        {
+            string cmdToExecute = "";
+            int cmdWithHighestVotes = 0;
             foreach (var vote in settings.votingList.Split(settings.commands_sep))
             {
                 var countVoteOfCommand = cmdList.Where(x => x == vote).Select(x => x).ToList().Count();
@@ -69,10 +78,36 @@ namespace Concurrent
                 }
             }
 
+            executeCommand(cmdToExecute);
+        }
 
-            Console.WriteLine(cmdList);
+        private void executeCommand(string command)
+        {
+            //String bashCmd = "";
+            //if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            //{
 
-            return "Your vote has been processed";
+            //}
+            /* ProcessStartInfo processInfo;
+             Process process;
+
+             processInfo = new ProcessStartInfo("/bin/bash", command);
+             processInfo.CreateNoWindow = true;
+             processInfo.UseShellExecute = true;
+
+             process = Process.Start(processInfo);*/
+            ProcessStartInfo procStartInfo = new ProcessStartInfo("/bin/bash", command);
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+
+            Process proc = new Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
+
+            String result = proc.StandardOutput.ReadToEnd();
+            System.Console.WriteLine(result);
+
         }
     }
 }

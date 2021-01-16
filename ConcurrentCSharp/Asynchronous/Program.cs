@@ -23,7 +23,7 @@ namespace Asynchrounous
             Console.ReadLine();
 
             sw.Start();
-            result = ct.InvokeAnInefficientAsyncTask().Result;
+            //result = ct.InvokeAnInefficientAsyncTask().Result;
             sw.Stop();
             long elapsedInEfficientAsyncTask = sw.ElapsedMilliseconds;
 
@@ -32,7 +32,7 @@ namespace Asynchrounous
 
             sw.Reset();
             sw.Start();
-            result = ct.InvokeAnEfficientAsyncTask().Result;
+            //result = ct.InvokeAnEfficientAsyncTask().Result;
             sw.Stop();
             long elapsedEfficientAsyncTask = sw.ElapsedMilliseconds;
 
@@ -54,7 +54,7 @@ namespace Asynchrounous
         }
         static void Main(string[] args)
         {
-            //Program.ExampleTasks();
+            Program.ExampleTasks();
         }
     }
 }

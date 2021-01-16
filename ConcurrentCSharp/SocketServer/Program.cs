@@ -13,7 +13,7 @@ namespace Program
     public class ServerSimulator
     {
         public Setting settings;
-        public string configFile = "../../../ClientServerConfig.json";
+        public string configFile = "../ClientServerConfig.json";
 
         public ServerSimulator()
         {
@@ -48,6 +48,7 @@ namespace Program
             {
                 ConcurrentServer server = new ConcurrentServer(settings);
                 server.prepareServer();
+                server.determineCommandWithMostVotesAndExecute();
             }
             catch (Exception e)
             {

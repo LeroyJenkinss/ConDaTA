@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Sequential;
 
@@ -11,16 +12,12 @@ namespace Concurrent
 
         public ConcurrentClient(int id, Setting settings) : base(id, settings)
         {
-            // todo [Assignment]: implement required code
             prepareClient();
-            communicate();
-            
         }
         public void run()
         {
-            // todo [Assignment]: implement required code
-            // send message to server
-            
+            communicate();
+            Thread.Sleep(settings.delayForTermination);
         }
     }
     public class ConcurrentClientsSimulator : SequentialClientsSimulator
@@ -38,11 +35,35 @@ namespace Concurrent
             try
             {
                 // todo [Assignment]: implement required code
-                for (int index = 1; index <= settings.experimentNumberOfClients; index++)
+                //{
+                //workerThread.
+                //clients[index] = new ConcurrentClient(index, settings);
+                //clients[1].run();
+
+                //Thread mainThread = new Thread();
+
+                var listThread = new List<Thread>();
+
+
+                for (int index = 0; index < settings.experimentNumberOfClients; index++)
                 {
-                    clients[index] = new ConcurrentClient(index, settings);
-                    clients[index].run();
+                    listThread.Add(new Thread(() => new ConcurrentClient(index, settings).run()));
+                    listThread[index].Start();
                 }
+
+                foreach(var client in listThread)
+                    client.Join();
+
+                //ConcurrentClient c;
+
+                //Thread printingThread = new Thread(() => { c = new ConcurrentClient(c, settings).run(settings.experimentNumberOfClients, settings.delayForTermination)} );
+                //Thread clientThread = new Thread(() => { });
+                // check: how we get return value of a thread
+
+                
+                //client.Start();
+                //clientThread.Start();
+                //}
             }
             catch (Exception e)
             { Console.Out.WriteLine("[Concurrent Simulator] {0}", e.Message); }
